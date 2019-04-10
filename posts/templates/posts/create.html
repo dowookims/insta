@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% load bootstrap4 %}
+
+{% block body %}
+  <!-- will use ModelForm -->
+  <form method="POST">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <button type="submit" class="btn btn-primary">업로드</button>
+  </form>
+{% endblock %}
