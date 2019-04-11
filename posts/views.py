@@ -13,7 +13,7 @@ def index(request):
 def create(request):
     if request.method == "POST":
         # written post apply on DB
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('posts:index')

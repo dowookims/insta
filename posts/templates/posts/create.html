@@ -4,7 +4,7 @@
 
 {% block body %}
   <!-- will use ModelForm -->
-  <form method="POST">
+  <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {% bootstrap_form form %}
     <button type="submit" class="btn btn-primary">업로드</button>

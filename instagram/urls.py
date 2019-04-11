@@ -15,9 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('posts/', include('posts.urls')),
 ]
+# Position argument, keyword_argument(어떤 url 넣고, 어디로 보내줘야 할지)
+urlpatterns += static(settings.MEDIA_URL, document_root =settings.MEDIA_ROOT)

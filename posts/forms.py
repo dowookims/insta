@@ -12,4 +12,4 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         # fields = "__all__" # __all__ : 가지고 있는 모든 필드(지금은 content가 적으나 나중에는 모델)
-        fields = ['content']
+        fields = ['content', 'image']
