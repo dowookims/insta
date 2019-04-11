@@ -28,6 +28,9 @@ def create(request):
 
 def update(request, id):
     post = get_object_or_404(Post, pk=id)
+    
+    if post.user != request.user:
+        return redirect('posts:index')
     if request.method == "POST":
         # 실제 DB에 수정 반영
         form = PostForm(request.POST, instance=post)
@@ -42,5 +45,7 @@ def update(request, id):
 @require_safe
 def delete(request, id):
     post = get_object_or_404(Post, pk=id)
+    if post.user != request.user:
+        return redirect('posts:index')    
     post.delete()
     return redirect('posts:index')

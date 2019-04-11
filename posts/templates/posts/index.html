@@ -4,11 +4,17 @@
   {% for post in posts %}
   <div class="row justify-content-center mt-5">
     <div class="card" style="width: 48rem;">
-    <img src="{{ post.image.url }}" class="card-img-top" alt="...">
+      <div class="card-header">
+        <span>{{ post.user }}</span>
+      </div>
+      <img src="{{ post.image.url }}" class="card-img-top" alt="...">
       <div class="card-body">
         <p class="card-text">{{ post.content }}</p>
-        <a href="{% url 'posts:delete' post.id %}" class="btn btn-danger">삭제</a>
-        <a href="{% url 'posts:update' post.id %}" class="btn btn-success">수정</a>
+        <!-- 작성자만 수정 / 삭제 가능 -->
+        {% if post.user == request.user %}
+          <a href="{% url 'posts:delete' post.id %}" class="btn btn-danger">삭제</a>
+          <a href="{% url 'posts:update' post.id %}" class="btn btn-success">수정</a>
+        {% endif %}
       </div>
     </div>
   </div>

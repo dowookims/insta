@@ -9,4 +9,4 @@ class Post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.content
+        return str(self.id) + '/' + self.content
