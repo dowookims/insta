@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from . forms import PostForm
 from . models import Post
 from django.views.decorators.http import require_safe
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -49,7 +50,8 @@ def delete(request, id):
         return redirect('posts:index')    
     post.delete()
     return redirect('posts:index')
-    
+
+@login_required
 def like(request, id):
     # 1. like를 추가할 포스트를 가져옴
     post = get_object_or_404(Post, id=id)

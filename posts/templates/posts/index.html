@@ -11,6 +11,17 @@
       <div class="card-body">
         <p class="card-text">{{ post.content }}</p>
         <!-- 작성자만 수정 / 삭제 가능 -->
+        <div class="post-menu card-body">
+          <!-- 좋아요 버튼 추가-->
+          {% if user in post.like_users.all %}
+          <a href="{% url 'posts:like' post.id %}"><i class="fas fa-heart like"></i></a>
+          {% else %}
+          <a href="{% url 'posts:like' post.id %}"><i class="far fa-heart no-like"></i></a>
+          {% endif %}
+          <span>
+            {{ post.like_users.all.count }}명이 좋아합니다.
+          </span>
+        </div>
         {% if post.user == request.user %}
           <a href="{% url 'posts:delete' post.id %}" class="btn btn-danger">삭제</a>
           <a href="{% url 'posts:update' post.id %}" class="btn btn-success">수정</a>
