@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth import get_user_model
 
 # Create your views here.
 def login(request):
@@ -36,3 +37,15 @@ def signup(request):
         # Put userinfo
         form = UserCreationForm()
         return render(request, 'accounts/signup.html', {'form': form})
+        
+
+def people(request, username):
+    # 사용자에 대한 정보를 넣을 예정.
+    # 하나는 settings.AUTH_USER_MODEL =  django.conf
+    # 둘째는 get_user_model() = django.contrib.auth
+    # 셋째는 User = django.contrib.auth.models
+    # 장고의 관례의 따라 3번은 존재하나 안쓰는게 좋고 둘중에 하나를 써야 하는데
+    # 강사님의 경우 1은 모델을 정의할 때, 2는 뷰를 만들 때 사용한다.
+    # lastest 인 get_user_model을 자주 쓸 생각을 하자 ㅇㅇ..
+    people = get_object_or_404(get_user_model(), username=username)
+    return  render(request, 'accounts/people.html', {'people': people})
