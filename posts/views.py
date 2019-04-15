@@ -49,3 +49,14 @@ def delete(request, id):
         return redirect('posts:index')    
     post.delete()
     return redirect('posts:index')
+    
+def like(request, id):
+    # 1. like를 추가할 포스트를 가져옴
+    post = get_object_or_404(Post, id=id)
+    # 2. if user already push like buttons, remove like else add like
+    if request.user in post.like_users.all():
+        post.like_users.remove(request.user)
+    else:
+        post.like_users.add(request.user)
+    return redirect('posts:index')
+    
