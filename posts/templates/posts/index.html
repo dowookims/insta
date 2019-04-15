@@ -1,13 +1,18 @@
 {% extends 'base.html' %}
 
 {% block body %}
+  {% if messages %}
+    <div class="alert alert-warning" role="alert">
+      {{ messages }}
+    </div>
+  {% endif %}
   {% for post in posts %}
   <div class="row justify-content-center mt-5">
-    <div class="card" style="width: 48rem;">
+    <div class="card" style="width: 30rem;">
       <div class="card-header">
         <span>{{ post.user }}</span>
       </div>
-      <img src="{{ post.image.url }}" class="card-img-top" alt="...">
+      <img src="{{ post.image.url }}" class="card-img-top" alt="..." style="max-height: 30rem;">
       <div class="card-body">
         <p class="card-text">{{ post.content }}</p>
         <!-- 작성자만 수정 / 삭제 가능 -->

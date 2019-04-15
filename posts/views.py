@@ -11,15 +11,17 @@ def index(request):
     posts = Post.objects.all()
     return render(request, 'posts/index.html', {'posts': posts})
 
+
+@login_required
 def create(request):
     if request.method == "POST":
         # written post apply on DB
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            post = form.save(commit=False)
+            post.user = request.user
+            post.save()
             return redirect('posts:index')
-        else:
-            pass
         
     else: #GET
         # Show Post writing form
