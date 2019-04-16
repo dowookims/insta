@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm, PasswordChangeForm
+from django.contrib.auth import get_user_model, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
+from . forms import CustomUserChangeForm
 
 # Create your views here.
 def login(request):
@@ -49,3 +52,42 @@ def people(request, username):
     # lastest 인 get_user_model을 자주 쓸 생각을 하자 ㅇㅇ..
     people = get_object_or_404(get_user_model(), username=username)
     return  render(request, 'accounts/people.html', {'people': people})
+    
+# 회원 정보 변경 action
+# 편집 & 반영
+@login_required
+@require_http_methods(['GET', 'POST'])
+def update(request):
+    if request.method == 'POST':
+        user_change_form = CustomUserChangeForm(request.POST, instance=request.user)
+        if user_change_form.is_valid():
+            user = user_change_form.save()
+        return redirect('people', user.username)
+    else:
+        user_change_form = CustomUserChangeForm(instance=request.user)
+        # password_change_form = PasswordChangeForm(request.user)
+        context = {
+            'user_change_form': user_change_form,
+        }
+        return render(request, 'accounts/update.html', context)
+        
+
+def delete(request):
+    if request.method =="POST":
+        request.user.delete()
+        return redirect('posts:index')
+    return render(request, 'accounts/delete.html')
+    
+def password(request):
+    if request.method == "POST":
+        pw_change_form = PasswordChangeForm(request.user, request.POST)
+        if pw_change_form.is_valid():
+            user = pw_change_form.save()
+            update_session_auth_hash(request, user)
+            return redirect('people', user.username)
+        else:
+            pw_change_form = PasswordChangeForm(request.user)
+            return render(request, 'accounts/password.html', {"pw_change_form":pw_change_form})
+    else:
+        pw_change_form = PasswordChangeForm(request.user)
+        return render(request, 'accounts/password.html', {"pw_change_form":pw_change_form})

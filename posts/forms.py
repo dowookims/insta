@@ -17,7 +17,8 @@ class PostForm(forms.ModelForm):
 
 class CommentForm(forms.ModelForm):
     content = forms.CharField(widget = forms.TextInput(attrs={
-        'placeholder': '댓글을 입력하세요.'
+        'placeholder': '댓글을 입력하세요.',
+        'class': 'form-control d-inline col-10'
     }), label='')
     
     class Meta:

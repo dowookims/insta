@@ -3,6 +3,11 @@
 {% block body %}
 <div class="container">
   <h1>{{ people.username }}</h1>
+  <p>{{ people.first_name }}{{ people.last_name }}</p>
+  {% if people.username == user.username %}
+  <a class="btn btn-info" href="{% url 'accounts:update' %}">회원 정보 수정</a>
+  <a class="btn btn-success" href="{% url 'accounts:password' %}">비밀 번호 변경</a>
+  {% endif %}
   <div class="row">
     {% for post in people.post_set.all %}
       <div class="col-4">
