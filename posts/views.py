@@ -1,15 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from . forms import PostForm
-from . models import Post
+from . forms import PostForm, CommentForm
+from . models import Post, Comment
 from django.views.decorators.http import require_safe
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
 
 # Create your views here.
 
 def index(request):
     # Show all posts
     posts = Post.objects.all()
-    return render(request, 'posts/index.html', {'posts': posts})
+    form = CommentForm()
+    return render(request, 'posts/index.html', {'posts': posts, 'form': form})
 
 
 @login_required
@@ -63,4 +65,25 @@ def like(request, id):
     else:
         post.like_users.add(request.user)
     return redirect('posts:index')
-    
+
+
+@login_required
+@require_http_methods(["POST"])
+def comment_create(request, id):
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        post = Post.objects.get(pk=id)
+        comment.user = request.user
+        comment.post = post
+        comment.save()
+    return redirect('posts:index')
+
+
+@login_required
+def comment_delete(request, id, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if comment.user != request.user:
+        return redirect('posts:index')
+    comment.delete()
+    return redirect('posts:index')

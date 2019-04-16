@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-
+{% load static %}
+{% load bootstrap4 %}
 {% block body %}
   {% if messages %}
     <div class="alert alert-warning" role="alert">
@@ -13,10 +14,10 @@
         <span>{{ post.user }}</span>
       </div>
       <img src="{{ post.image.url }}" class="card-img-top" alt="..." style="max-height: 30rem;">
-      <div class="card-body">
-        <p class="card-text">{{ post.content }}</p>
+      <div class="card-body mt-3 mb-0 pb-0">
+        <p class="card-text"><strong class="mr-3">{{post.user}}</strong> {{ post.content }}</p>
         <!-- 작성자만 수정 / 삭제 가능 -->
-        <div class="post-menu card-body">
+        <div class="post-menu card-body pl-0">
           <!-- 좋아요 버튼 추가-->
           {% if user in post.like_users.all %}
           <a href="{% url 'posts:like' post.id %}"><i class="fas fa-heart like"></i></a>
@@ -28,9 +29,34 @@
           </span>
         </div>
         {% if post.user == request.user %}
-          <a href="{% url 'posts:delete' post.id %}" class="btn btn-danger">삭제</a>
+        <div class="d-flex justify-content-end">
+          <a href="{% url 'posts:delete' post.id %}" class="btn btn-danger mr-3">삭제</a>
           <a href="{% url 'posts:update' post.id %}" class="btn btn-success">수정</a>
+        </div>
         {% endif %}
+      </div>
+      {% if user.is_authenticated %}
+      <div class="card-body">
+        <!-- Comment에 대한 ModelForm  -->
+        <div class="comment">
+          <form action="{% url 'posts:comment_create' post.id%}" method="POST">
+            <!-- Use Bootstrap Form  -->
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <button class="btn btn-primary" type="submit">등록</button>
+          </form>
+        </div>
+        <hr />
+      {% endif %}
+        <!-- 해당글에 작성된 댓글을 모두 출력 -->
+        {% for comment in post.comment_set.all %}
+          <p class="mt-2">
+            <span class="mr-3"><strong>{{ comment.user.username }}</strong></span><span>{{ comment.content }}</span>
+            {% if request.user == comment.user %}
+            <a href="{% url 'posts:comment_delete' post.id comment.id %}">삭제</a>
+            {% endif %}
+          </p>
+        {% endfor %}
       </div>
     </div>
   </div>

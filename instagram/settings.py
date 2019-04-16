@@ -122,7 +122,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 # 미디어  파일들이 불릴 url
 MEDIA_URL = '/media/'
 # 실제 저장 장소

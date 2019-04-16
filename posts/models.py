@@ -11,3 +11,13 @@ class Post(models.Model):
     
     def __str__(self):
         return str(self.id) + '/' + self.content
+        
+class Comment(models.Model):
+    content = models.TextField()
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return self.user + '님이' + self.post.content + '글에' + self.content +'라는 댓글을 달았습니다.'
