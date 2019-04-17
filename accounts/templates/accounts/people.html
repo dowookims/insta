@@ -2,12 +2,23 @@
 
 {% block body %}
 <div class="container">
-  <h1>{{ people.username }}</h1>
-  <p>{{ people.first_name }}{{ people.last_name }}</p>
-  {% if people.username == user.username %}
-  <a class="btn btn-info" href="{% url 'accounts:update' %}">회원 정보 수정</a>
-  <a class="btn btn-success" href="{% url 'accounts:password' %}">비밀 번호 변경</a>
+  <div class="row">
+    <div class="col-4">
+      <img src="https://pbs.twimg.com/profile_images/835741809217159168/MttjxBsy.jpg" class="card-img-top" alt="..." style="max-height: 30rem;">
+    </div>
+    <div class="col-8">
+    <h1 class="d-inline">{{ people.username }}</h1>
+    <a class="btn btn-info" href="{% url 'accounts:update' %}">회원 정보 수정</a>
+    <a class="btn btn-success" href="{% url 'accounts:password' %}">비밀 번호 변경</a>
+    <p>{{ people.first_name }}{{ people.last_name }}</p>
+    <p class><strong>{{ profile.nickname  }}</strong></p>
+    <p>{{ profile.description }}</p>
+    {% if people.username == user.username %}
+    
+    </div>
+  </div>
   {% endif %}
+  
   <div class="row">
     {% for post in people.post_set.all %}
       <div class="col-4">

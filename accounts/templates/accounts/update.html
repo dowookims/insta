@@ -6,6 +6,7 @@
 <form method="POST">
   {% csrf_token %}
   {% bootstrap_form user_change_form %}
+  {% bootstrap_form profile_form %}
   <button class="btn btn-primary">수정</button>
 </form>
 {% endblock %}

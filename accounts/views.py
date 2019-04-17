@@ -6,6 +6,8 @@ from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from . forms import CustomUserChangeForm
+from . models import Profile
+from . forms import ProfileForm
 
 # Create your views here.
 def login(request):
@@ -17,6 +19,9 @@ def login(request):
             # 정의되어 있지 않으면 posts의 index로 리다이렉트
             # 로그인 되어 있지 않을시 로그인으로 이동 한 후 로그인 이후에 추가적인 행동을 하게 리다이렉팅 하는 경우가 많다
             return redirect(request.GET.get('next') or 'posts:index')
+        else:
+            form = AuthenticationForm()
+            return render(request, "accounts/login.html", {'form': form})
         
     else:
         form = AuthenticationForm()
@@ -33,6 +38,7 @@ def signup(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            Profile.objects.create(user=user)
             auth_login(request, user)
             return redirect('posts:index')
         
@@ -51,7 +57,12 @@ def people(request, username):
     # 강사님의 경우 1은 모델을 정의할 때, 2는 뷰를 만들 때 사용한다.
     # lastest 인 get_user_model을 자주 쓸 생각을 하자 ㅇㅇ..
     people = get_object_or_404(get_user_model(), username=username)
-    return  render(request, 'accounts/people.html', {'people': people})
+    profile = Profile.objects.get(user=request.user)
+    context = {
+        "people": people,
+        "profile": profile
+    }
+    return  render(request, 'accounts/people.html', context)
     
 # 회원 정보 변경 action
 # 편집 & 반영
@@ -59,25 +70,38 @@ def people(request, username):
 @require_http_methods(['GET', 'POST'])
 def update(request):
     if request.method == 'POST':
-        user_change_form = CustomUserChangeForm(request.POST, instance=request.user)
-        if user_change_form.is_valid():
+        user_change_form = CustomUserChangeForm(instance=request.user, data = request.POST)
+        profile_form = ProfileForm(request.POST, instance=request.user.profile)
+        if user_change_form.is_valid() and profile_form.is_valid():
             user = user_change_form.save()
+            profile_form.save()
         return redirect('people', user.username)
     else:
         user_change_form = CustomUserChangeForm(instance=request.user)
+        # 1. instance에 넣어줄 정보가 있는 User가 있고, 없는 User도 있다.
+        # 밑에 있는 친구는 튜플을 반환하는데 profile 객체가 있으면 profile을, 
+        # 없으면 만들어야 하므로 created가 되어야 한다.
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        profile_form = ProfileForm(instance=profile)
         # password_change_form = PasswordChangeForm(request.user)
         context = {
             'user_change_form': user_change_form,
+            'profile_form': profile_form,
         }
         return render(request, 'accounts/update.html', context)
         
 
+@login_required
+@require_http_methods(['GET', 'POST'])
 def delete(request):
     if request.method =="POST":
         request.user.delete()
         return redirect('posts:index')
     return render(request, 'accounts/delete.html')
-    
+
+
+@login_required
+@require_http_methods(['GET', 'POST'])
 def password(request):
     if request.method == "POST":
         pw_change_form = PasswordChangeForm(request.user, request.POST)

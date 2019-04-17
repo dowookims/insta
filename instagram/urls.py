@@ -18,13 +18,15 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from accounts import views as ac_views
+from posts import views as posts_views
 
 
 urlpatterns = [
+    path('', posts_views.index, name="root"),
     path('admin/', admin.site.urls),
     path('posts/', include('posts.urls')),
     path('accounts/', include('accounts.urls')),
-    path('<str:username>', ac_views.people, name="people")
+    path('<str:username>', ac_views.people, name="people"),
 ]
 # Position argument, keyword_argument(어떤 url 넣고, 어디로 보내줘야 할지)
 urlpatterns += static(settings.MEDIA_URL, document_root =settings.MEDIA_ROOT)
