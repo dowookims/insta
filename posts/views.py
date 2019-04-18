@@ -13,7 +13,6 @@ def index(request):
     # Show all posts
       # 뭔가
     posts = Post.objects.filter(Q(user__in=request.user.followings.all()) | Q(user=request.user)).order_by('-id')
-    print(posts.query)
     form = CommentForm()
     return render(request, 'posts/index.html', {'posts': posts, 'form': form})
 

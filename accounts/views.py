@@ -71,7 +71,7 @@ def people(request, username):
 def update(request):
     if request.method == 'POST':
         user_change_form = CustomUserChangeForm(instance=request.user, data = request.POST)
-        profile_form = ProfileForm(request.POST, instance=request.user.profile)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
         if user_change_form.is_valid() and profile_form.is_valid():
             user = user_change_form.save()
             profile_form.save()

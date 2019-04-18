@@ -1,41 +1,44 @@
 {% extends 'base.html' %}
-
-{% block body %}
-<div class="container mt-5">
-  <div class="row">
-    <div class="col-4 d-flex justify-content-center">
-      <img src="https://pbs.twimg.com/profile_images/835741809217159168/MttjxBsy.jpg" class="card-img-top rounded-circle" alt="..." style="max-height: 10rem; max-width: 10rem">
-    </div>
-    <div class="col-8">
-      <div class="row">
-        <h1 class="d-inline">{{ people.username }}</h1>
-        {% if people.username == user.username %}
-          <a class="btn btn-outline-info" href="{% url 'accounts:update' %}">회원 정보 수정</a>
-          <a class="btn btn-outline-success" href="{% url 'accounts:password' %}">비밀 번호 변경</a>
-        {% endif %}
-        {% if user != people %}
-          {% if user in people.follows.all %}
-            <a class="ml-3 btn btn-dark h-25 mt-2" href="{% url 'accounts:follow' people.id %}">언팔로우</a>
-          {% else %}
-            <a class="ml-3 btn btn-outline-dark h-25 mt-2" href="{% url 'accounts:follow' people.id %}">팔로우</a>
+<div class="container">
+  {% block body %}
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-4 d-flex justify-content-center">
+        <img src="{{ profile.image.url }}" class="card-img-top rounded-circle" alt="..." style="max-height: 10rem; max-width: 10rem">
+      </div>
+      <div class="col-8">
+        <div class="row">
+          <h1 class="d-inline-block">{{ people.username }}</h1>
+          {% if people.username == user.username %}
+            <a class="btn btn-outline-info h-25 mt-2 ml-5 mr-3" href="{% url 'accounts:update' %}">회원 정보 수정</a>
+            <a class="btn btn-outline-success h-25 mt-2" href="{% url 'accounts:password' %}">비밀 번호 변경</a>
           {% endif %}
-        {% endif %}
+          {% if user != people %}
+            {% if user in people.follows.all %}
+              <a class="ml-3 btn btn-dark h-25 mt-2" href="{% url 'accounts:follow' people.id %}">언팔로우</a>
+            {% else %}
+              <a class="ml-3 btn btn-outline-dark h-25 mt-2" href="{% url 'accounts:follow' people.id %}">팔로우</a>
+            {% endif %}
+          {% endif %}
+        </div>
+        <p>{{ people.first_name }}{{ people.last_name }}</p>
+        <p class><strong>{{ profile.nickname  }}</strong></p>
+        <p>{{ profile.description }}</p>
       </div>
-      <p>{{ people.first_name }}{{ people.last_name }}</p>
-      <p class><strong>{{ profile.nickname  }}</strong></p>
-      <p>{{ profile.description }}</p>
+      <hr class="mt-5" />
+    </div>
+    
+    
+    
+    <div class="row mt-4">
+      {% for post in people.post_set.all %}
+        <div class="col-4 mt-4">
+          <div class="col-11">
+            <img src="{{ post.image.url }}" class="img-fluid" alt="사진쓰"/>
+          </div>
+        </div>
+      {% endfor %}
     </div>
   </div>
-  
-  
-  <div class="row">
-    {% for post in people.post_set.all %}
-      <div class="col-4 mt-4">
-        <div class="col-11">
-          <img src="{{ post.image.url }}" class="img-fluid" alt="사진쓰"/>
-        </div>
-      </div>
-    {% endfor %}
-  </div>
+  {% endblock %}
 </div>
-{% endblock %}

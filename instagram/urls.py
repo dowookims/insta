@@ -29,4 +29,4 @@ urlpatterns = [
     path('<str:username>', ac_views.people, name="people"),
 ]
 # Position argument, keyword_argument(어떤 url 넣고, 어디로 보내줘야 할지)
-urlpatterns += static(settings.MEDIA_URL, document_root =settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

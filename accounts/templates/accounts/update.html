@@ -3,7 +3,7 @@
 {% block body %}
 
 <h1 class="text-center">회원 정보 변경</h1>
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
   {% csrf_token %}
   {% bootstrap_form user_change_form %}
   {% bootstrap_form profile_form %}
