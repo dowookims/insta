@@ -8,7 +8,7 @@
     <div class="row justify-content-center">
       <div class="card mt-5" style="width: 30rem;">
         <div class="card-header">
-          <span>{{ post.user }}</span>
+          <a class="username-text" href="{% url 'people' post.user %}">{{ post.user }}</a>
         </div>
         <img src="{{ post.image.url }}" class="card-img-top" alt="..." style="max-height: 30rem;">
         <div class="card-body mt-3 mb-0 pb-0">
@@ -27,8 +27,8 @@
           </div>
           {% if post.user == request.user %}
           <div class="d-flex justify-content-end">
-            <a href="{% url 'posts:delete' post.id %}" class="btn btn-danger mr-3">삭제</a>
-            <a href="{% url 'posts:update' post.id %}" class="btn btn-success">수정</a>
+            <a href="{% url 'posts:delete' post.id %}" class="btn btn-danger mr-3 text-center">삭제</a>
+            <a href="{% url 'posts:update' post.id %}" class="btn btn-success text-center">수정</a>
           </div>
           {% endif %}
         </div>

@@ -4,12 +4,16 @@ from . models import Post, Comment
 from django.views.decorators.http import require_safe
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
+from django.db.models import Q
 
 # Create your views here.
 
+@login_required
 def index(request):
     # Show all posts
-    posts = Post.objects.all()
+      # 뭔가
+    posts = Post.objects.filter(Q(user__in=request.user.followings.all()) | Q(user=request.user)).order_by('-id')
+    print(posts.query)
     form = CommentForm()
     return render(request, 'posts/index.html', {'posts': posts, 'form': form})
 

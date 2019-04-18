@@ -1,3 +1,7 @@
 body {
     background-color: #FAFAFA;
 }
+.username-text, .username-text:hover {
+    text-decoration: none;
+    color: black;
+}

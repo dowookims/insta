@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, User
 from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
-from . forms import CustomUserChangeForm
+from . forms import CustomUserChangeForm, CustomUserCreationForm
 from . models import Profile
 from . forms import ProfileForm
 
@@ -35,7 +35,7 @@ def logout(request):
 def signup(request):
     if request.method =="POST":
         # User Signup
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             Profile.objects.create(user=user)
@@ -44,7 +44,7 @@ def signup(request):
         
     else:
         # Put userinfo
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
         return render(request, 'accounts/signup.html', {'form': form})
         
 
@@ -57,7 +57,7 @@ def people(request, username):
     # 강사님의 경우 1은 모델을 정의할 때, 2는 뷰를 만들 때 사용한다.
     # lastest 인 get_user_model을 자주 쓸 생각을 하자 ㅇㅇ..
     people = get_object_or_404(get_user_model(), username=username)
-    profile = Profile.objects.get(user=request.user)
+    profile = Profile.objects.get(user_id=people.id)
     context = {
         "people": people,
         "profile": profile
@@ -115,3 +115,18 @@ def password(request):
     else:
         pw_change_form = PasswordChangeForm(request.user)
         return render(request, 'accounts/password.html', {"pw_change_form":pw_change_form})
+
+@login_required
+def follow(request, user_id):
+    person = get_object_or_404(get_user_model(), pk=user_id)
+    
+    # 만약 현재 유저가 해당 유저를 이미 팔로우 하고 있었으면
+    # => 팔로우를 취소
+    # 아니면
+    # => 팔로우를 함.
+    if request.user in person.follows.all():
+        person.follows.remove(request.user)
+    else:
+        person.follows.add(request.user)
+    return redirect("people", person.username)
+    
