@@ -1,13 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login as auth_login
-from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import login as auth_login, logout as auth_logout, get_user_model, update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm, PasswordChangeForm
-from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_http_methods
-from . forms import CustomUserChangeForm, CustomUserCreationForm
+from django.views.decorators.http import require_http_methods, require_POST
+from . forms import CustomUserChangeForm, CustomUserCreationForm, ProfileForm
 from . models import Profile
-from . forms import ProfileForm
 
 # Create your views here.
 def login(request):

@@ -34,6 +34,7 @@ def create(request):
         actions = 'create'
         return render(request, 'posts/create.html', {'form':form })
 
+
 def update(request, id):
     post = get_object_or_404(Post, pk=id)
     
@@ -50,6 +51,7 @@ def update(request, id):
         form = PostForm(instance=post)
         return render(request, 'posts/create.html', {'form': form })
 
+
 @require_safe
 def delete(request, id):
     post = get_object_or_404(Post, pk=id)
@@ -57,6 +59,7 @@ def delete(request, id):
         return redirect('posts:index')    
     post.delete()
     return redirect('posts:index')
+
 
 @login_required
 def like(request, id):
