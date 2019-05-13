@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'posts',
     'bootstrap4',
     'accounts',
-    'heroku',
 ]
 
 MIDDLEWARE = [
@@ -134,3 +133,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 AUTH_USER_MODEL = 'accounts.User'
+
+django_heroku.settings(locals())
