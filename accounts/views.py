@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST
 from . forms import CustomUserChangeForm, CustomUserCreationForm, ProfileForm
 from . models import Profile
+from django.http import JsonResponse
 
 # Create your views here.
 def login(request):
@@ -127,3 +128,19 @@ def follow(request, user_id):
         person.follows.add(request.user)
     return redirect("people", person.username)
     
+def vue_follow(request, user_id):
+    person = get_object_or_404(get_user_model(), pk=user_id)
+    followed = True
+    if request.user in person.follows.all():
+        person.follows.remove(request.user)
+        followed = False
+    else:
+        person.follows.add(request.user)
+    return JsonResponse({'followed':followed})
+    
+def chk_follow(request, user_id):
+    person = get_object_or_404(get_user_model(), pk=user_id)
+    followed = False
+    if request.user in person.follows.all():
+        followed = True
+    return JsonResponse({'followed':followed})

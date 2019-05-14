@@ -21,6 +21,12 @@
             {% endif %}
           {% endif %}
         </div>
+        
+        <!--Vue 로 동작하는 버튼 -->
+        <div id="app">
+          <p>[[test]]</p>
+          <button v-show="load" :class="{'btn': true, 'btn-primary': isFollowed, 'btn-outline-primary': !isFollowed}" @click="follow({{ people.id }})" >Vue팔로우</button>
+        </div>
         <p>{{ people.first_name }}{{ people.last_name }}</p>
         <p class><strong>{{ profile.nickname  }}</strong></p>
         <p>{{ profile.description }}</p>
@@ -40,5 +46,32 @@
       {% endfor %}
     </div>
   </div>
+  <script>
+    const app = new Vue({
+      delimiters: ["[[","]]"],
+      el: '#app',
+      data: {
+        test: 'can see?',
+        isFollowed: '',
+        load: false,
+      },
+      methods: {
+        follow: function(person_id){
+          axios.get(`/accounts/${person_id}/vue_follow/`)
+            .then(res => res.data)
+            .then(data => this.isFollowed=data.followed)
+        },
+        chk_follow: function(person_id){
+        axios.get(`/accounts/${person_id}/chk_follow/`)
+            .then(res => res.data)
+            .then(data => this.isFollowed=data.followed)
+        this.load= true
+        }
+      },
+      beforeMount: function(){
+        this.chk_follow({{people.id}})
+      }
+    })
+  </script>
   {% endblock %}
 </div>
